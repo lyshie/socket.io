@@ -24,17 +24,19 @@ io.on('connection', function (socket) {
   socket.on('new message', function (data) {
     // we tell the client to execute 'new message'
     socket.broadcast.emit('new message', {
+      avatar: socket.avatar,
       username: socket.username,
       message: data
     });
   });
 
   // when the client emits 'add user', this listens and executes
-  socket.on('add user', function (username) {
+  socket.on('add user', function (username, avatar) {
     if (addedUser) return;
 
     // we store the username in the socket session for this client
     socket.username = username;
+    socket.avatar = avatar;
     ++numUsers;
     addedUser = true;
     socket.emit('login', {
@@ -42,6 +44,7 @@ io.on('connection', function (socket) {
     });
     // echo globally (all clients) that a person has connected
     socket.broadcast.emit('user joined', {
+      avatar: socket.avatar,
       username: socket.username,
       numUsers: numUsers
     });
@@ -50,6 +53,7 @@ io.on('connection', function (socket) {
   // when the client emits 'typing', we broadcast it to others
   socket.on('typing', function () {
     socket.broadcast.emit('typing', {
+      avatar: socket.avatar,
       username: socket.username
     });
   });
@@ -57,6 +61,7 @@ io.on('connection', function (socket) {
   // when the client emits 'stop typing', we broadcast it to others
   socket.on('stop typing', function () {
     socket.broadcast.emit('stop typing', {
+      avatar: socket.avatar,
       username: socket.username
     });
   });
@@ -68,6 +73,7 @@ io.on('connection', function (socket) {
 
       // echo globally that this client has left
       socket.broadcast.emit('user left', {
+        avatar: socket.avatar,
         username: socket.username,
         numUsers: numUsers
       });

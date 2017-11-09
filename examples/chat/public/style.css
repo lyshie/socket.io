@@ -147,3 +147,8 @@ ul {
   right: 0;
   width: 100%;
 }
+
+.avatar img {
+  vertical-align: middle;
+  width: 36px;
+}
